@@ -22,16 +22,21 @@ import json
 import logging
 import os
 
-from django import setup as django_setup
-from django.core.management import execute_from_command_line
-from django.test import Client
+try:
+    from django import setup as django_setup
+    from django.core.management import execute_from_command_line
+    from django.test import Client
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ara.server.settings')
-# Automatically create the database and run migrations (is there a better way?)
-execute_from_command_line(['django', 'migrate'])
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ara.server.settings')
 
-# Set up the things Django needs
-django_setup()
+    # Automatically create the database and run migrations (is there a better way?)
+    execute_from_command_line(['django', 'migrate'])
+
+    # Set up the things Django needs
+    django_setup()
+except (ImportError, ModuleNotFoundError) as e:
+    print('ERROR: The offline client requires ara-server to be installed')
+    raise e
 
 
 class AraOfflineClient(object):
