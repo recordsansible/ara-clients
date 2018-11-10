@@ -23,8 +23,9 @@ import os
 import threading
 
 from django.core.handlers.wsgi import WSGIHandler
-from django.core.servers.basehttp import ServerHandler as BaseServerHandler, ThreadedWSGIServer, WSGIRequestHandler
+from django.core.servers.basehttp import ThreadedWSGIServer
 
+from .compat import QuietWSGIRequestHandler
 from .http import AraHttpClient
 
 
@@ -58,34 +59,6 @@ class AraOfflineClient(AraHttpClient):
         self.server_thread.is_ready.wait()
         if self.server_thread.error:
             raise self.server_thread.error
-
-
-class ServerHandler(BaseServerHandler):
-    def cleanup_headers(self):
-        super().cleanup_headers()
-        self.headers["Connection"] = "close"
-
-
-class QuietWSGIRequestHandler(WSGIRequestHandler):
-    def log_message(*args):
-        pass
-
-    def handle(self):
-        """Copy of WSGIRequestHandler.handle() but with different ServerHandler"""
-        self.raw_requestline = self.rfile.readline(65537)
-        if len(self.raw_requestline) > 65536:
-            self.requestline = ""
-            self.request_version = ""
-            self.command = ""
-            self.send_error(414)
-            return
-
-        if not self.parse_request():  # An error code has been sent, just exit
-            return
-
-        handler = ServerHandler(self.rfile, self.wfile, self.get_stderr(), self.get_environ())
-        handler.request_handler = self  # backpointer for logging
-        handler.run(self.server.get_app())
 
 
 class ServerThread(threading.Thread):
