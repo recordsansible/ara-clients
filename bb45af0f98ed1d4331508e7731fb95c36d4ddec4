@@ -1,0 +1,9 @@
+Code-Review+2: Florian Apolloner <florian@apolloner.eu>
+Workflow+1: Florian Apolloner <florian@apolloner.eu>
+Code-Review+1: Pierre-Louis Bonicoli <pierre-louis.bonicoli@libregerbil.fr>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Tue, 22 Jan 2019 14:44:39 +0000
+Reviewed-on: https://review.openstack.org/632474
+Project: openstack/ara-clients
+Branch: refs/heads/master
